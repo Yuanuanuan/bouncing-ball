@@ -29,11 +29,20 @@ class Brick {
     ctx.fillStyle = "lightgreen";
     ctx.fillRect(this.x, this.y, this.width, this.height);
   }
+
+  touchBall(x, y) {
+    return (
+      x >= this.x - radius &&
+      x <= this.x + this.width + radius &&
+      y <= this.y + radius + this.height &&
+      y >= this.y - radius
+    );
+  }
 }
 
 // 製作所有的brick
 for (let i = 0; i < 10; i++) {
-  new Brick(getRandom(0, 950), getRandom(0, 550))
+  new Brick(getRandom(0, 950), getRandom(0, 550));
 }
 
 c.addEventListener("mousemove", (e) => {
@@ -41,6 +50,24 @@ c.addEventListener("mousemove", (e) => {
 });
 
 function drawCircle() {
+  // 確認球是否碰到磚塊
+  brickArray.forEach((brick, index) => {
+    if (brick.touchBall(circle_x, circle_y)) {
+      if (circle_y >= brick.y + brick.height || circle_y <= brick.y) {
+        ySpeed *= -1;
+      }
+      if (circle_x >= brick.x + brick.width || circle_x <= brick.x) {
+        xSpeed *= -1;
+      }
+
+      brickArray.splice(index, 1);
+      if (brickArray.length == 0) {
+        alert("遊戲結束!");
+        clearInterval(game);
+      }
+    }
+  });
+
   // 更動圓的座標
   circle_x += xSpeed;
   circle_y += ySpeed;
@@ -71,9 +98,9 @@ function drawCircle() {
   ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
   // 畫出所有的brick
-  brickArray.forEach(brick => {
+  brickArray.forEach((brick) => {
     brick.drawBrick();
-  })
+  });
 
   // 畫出地板
   ctx.fillStyle = "white";
