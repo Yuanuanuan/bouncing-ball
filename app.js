@@ -9,7 +9,32 @@ let circle_x = 160,
   ySpeed = 20,
   ground_x = 100,
   ground_y = 500,
-  ground_h = 5;
+  ground_h = 5,
+  brickArray = [];
+
+function getRandom(min, max) {
+  return min + Math.floor(Math.random() * (max - min));
+}
+
+class Brick {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.width = 50;
+    this.height = 50;
+    brickArray.push(this);
+  }
+
+  drawBrick() {
+    ctx.fillStyle = "lightgreen";
+    ctx.fillRect(this.x, this.y, this.width, this.height);
+  }
+}
+
+// 製作所有的brick
+for (let i = 0; i < 10; i++) {
+  new Brick(getRandom(0, 950), getRandom(0, 550))
+}
 
 c.addEventListener("mousemove", (e) => {
   ground_x = e.clientX - 100;
@@ -44,6 +69,11 @@ function drawCircle() {
   // 畫出黑色背景
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+  // 畫出所有的brick
+  brickArray.forEach(brick => {
+    brick.drawBrick();
+  })
 
   // 畫出地板
   ctx.fillStyle = "white";
