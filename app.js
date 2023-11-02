@@ -10,7 +10,8 @@ let circle_x = 160,
   ground_x = 100,
   ground_y = 500,
   ground_h = 5,
-  brickArray = [];
+  brickArray = [],
+  count = 0;
 
 function getRandom(min, max) {
   return min + Math.floor(Math.random() * (max - min));
@@ -22,11 +23,12 @@ class Brick {
     this.y = y;
     this.width = 50;
     this.height = 50;
+    this.visible = true;
     brickArray.push(this);
   }
 
   drawBrick() {
-    ctx.fillStyle = "lightgreen";
+    ctx.fillStyle = "#c3ad9f";
     ctx.fillRect(this.x, this.y, this.width, this.height);
   }
 
@@ -51,8 +53,10 @@ c.addEventListener("mousemove", (e) => {
 
 function drawCircle() {
   // 確認球是否碰到磚塊
-  brickArray.forEach((brick, index) => {
-    if (brick.touchBall(circle_x, circle_y)) {
+  brickArray.forEach((brick) => {
+    if (brick.visible && brick.touchBall(circle_x, circle_y)) {
+      count++;
+      brick.visible = false;
       if (circle_y >= brick.y + brick.height || circle_y <= brick.y) {
         ySpeed *= -1;
       }
@@ -60,8 +64,13 @@ function drawCircle() {
         xSpeed *= -1;
       }
 
-      brickArray.splice(index, 1);
-      if (brickArray.length == 0) {
+      // brickArray.splice(index, 1);
+      // if (brickArray.length == 0) {
+      //   alert("遊戲結束!");
+      //   clearInterval(game);
+      // }
+
+      if (count === 10) {
         alert("遊戲結束!");
         clearInterval(game);
       }
@@ -99,7 +108,7 @@ function drawCircle() {
 
   // 畫出所有的brick
   brickArray.forEach((brick) => {
-    brick.drawBrick();
+    if (brick.visible) brick.drawBrick();
   });
 
   // 畫出地板
@@ -110,7 +119,7 @@ function drawCircle() {
   ctx.beginPath();
   ctx.arc(circle_x, circle_y, radius, 0, 2 * Math.PI);
   ctx.stroke();
-  ctx.fillStyle = "yellow";
+  ctx.fillStyle = "#C66DA8";
   ctx.fill();
 }
 
